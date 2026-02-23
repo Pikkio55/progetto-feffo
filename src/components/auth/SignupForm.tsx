@@ -1,11 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { supabaseBrowserClient } from "@/lib/supabaseBrowser";
 
 export function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
   const supabase = supabaseBrowserClient();
 
   const [form, setForm] = useState({
@@ -46,9 +48,16 @@ export function SignupForm() {
       }
     }
 
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    if (signInError) {
+      setError(signInError.message);
+      setLoading(false);
+      return;
+    }
+
     setSuccess("Account creato! Ti stiamo portando alla dashboard...");
     setLoading(false);
-    router.push("/dashboard");
+    router.push(redirectTo);
     router.refresh();
   };
 
