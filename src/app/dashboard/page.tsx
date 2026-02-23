@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-import { createSupabaseServerClient } from "@/lib/supabaseServer";
+import { getSupabaseServerClient } from "@/lib/supabaseServer";
 import { VoiceAgentForm } from "@/components/dashboard/VoiceAgentForm";
 
 export default async function DashboardPage() {
-  const supabase = createSupabaseServerClient(cookies());
+  const supabase = await getSupabaseServerClient();
   const {
     data: { user }
   } = await supabase.auth.getUser();

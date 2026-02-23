@@ -1,13 +1,12 @@
 "use server";
 
-import { cookies } from "next/headers";
-import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { revalidatePath } from "next/cache";
+import { getSupabaseServerClient } from "@/lib/supabaseServer";
 
 type AgentFormState = { error?: string; success?: boolean };
 
 export async function createVoiceAgentAction(_prevState: AgentFormState, formData: FormData): Promise<AgentFormState> {
-  const supabase = createSupabaseServerClient(cookies());
+  const supabase = await getSupabaseServerClient();
   const {
     data: { user }
   } = await supabase.auth.getUser();
